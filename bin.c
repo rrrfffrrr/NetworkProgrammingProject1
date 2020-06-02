@@ -1,0 +1,102 @@
+/*
+* KANG CHAN YEONG(rrrfffrrr@naver.com)
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <stdbool.h>
+#include <string.h>
+
+#include "errmsg.h"
+#include "packet.h"
+#include "middleware.h"
+
+const int MAX_PORT = 65535;
+int port = 80;
+
+int backlog = 5;
+
+// Debug middleware
+// print full data to console
+enum EMiddlewareReturn PrintAndClose(int client, char* data) {
+	printf("\e[93m###DATA###\e[0m\n%s\n\e[93m##########\e[0m\n", data);
+	write(client, "HTTP/2 404 Not Found\ncontent-length: 4\ncontent-type: text/html; charset=UTF-8\n\n404 ", 84);
+	return MDRET_Handled;
+}
+
+int main(int argc, char *argv[]) {
+	// Parse argument and get port
+	if (argc < 2) {
+		ErrorMessage(EMSGCRT_PORT_NOPORT);
+		exit(EMSGRET_PORT);
+	}
+	port = atoi(argv[1]);
+	if (port > MAX_PORT || port < 0) {
+		ErrorMessage(EMSGCRT_PORT_INVALIDPORT);
+		exit(EMSGRET_PORT);
+	}
+
+	// Initialize middlewares
+	MIDDLEWARE(middlewares);
+	AddMiddleware(middlewares, PrintAndClose);
+
+	// Make a tcp socket
+	// Socket created with TCP/IPv4.
+	int server = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (server < 0) {
+		ErrorMessage(EMSGCRT_SOCKET_NOTSUPPORT);
+		exit(EMSGRET_SOCKET);
+	}
+	
+	// Initialize address structure to bind socket.
+	struct sockaddr_in socketAddr;
+	bzero((char*)&socketAddr, sizeof(socketAddr));
+	socketAddr.sin_family = AF_INET;				// IPv4
+	socketAddr.sin_addr.s_addr = htonl(INADDR_ANY);	// ip address (INADDR_ANY mean selected by system)
+	socketAddr.sin_port = htons(port);				// port
+
+	// Bind address to socket
+	if (bind(server, (struct sockaddr*)&socketAddr, sizeof(socketAddr)) < 0) {
+		ErrorMessage(EMSGCRT_SOCKET_CANNOTBIND);
+		exit(EMSGRET_SOCKET);
+	}
+
+	// Start server
+	listen(server, backlog);
+
+	// Infinite loop
+	while(true) {
+		// Initialize client address structure
+		struct sockaddr_in clientAddr;
+		socklen_t clientAddrLen = sizeof(clientAddr);
+		// Accept next client
+		int client = accept(server, (struct sockaddr*)&clientAddr, &clientAddrLen);
+		if (client < 0) {
+			WarningMessage(EMSGWRN_SOCKET_CANNOTACCEPT);
+			continue;
+		}
+
+		// Get packet
+		char buf[PACKET_SIZE];
+		bzero(buf, PACKET_SIZE);
+		int n = read(client, buf, PACKET_SIZE);
+		if (n < 0) {
+			WarningMessage(EMSGWRN_PACKET_INVALIDPACKET);
+			close(client);
+			continue;
+		}
+
+		// Run middleware to process data
+		RunMiddleware(&middlewares, client, buf);
+
+		// Cleanup
+		close(client);
+	}
+
+	// Clean
+	close(server);
+	return 0;
+}
