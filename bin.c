@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
 	// Initialize middlewares
 	MIDDLEWARE(middlewares);
 	AddMiddleware(middlewares, PrintToConsole);
+	AddMiddleware(middlewares, Response404);
 
 	// Make a tcp socket
 	// Socket created with TCP/IPv4.
@@ -84,7 +85,6 @@ int main(int argc, char *argv[]) {
 
 		// Run middleware to process data
 		RunMiddleware(&middlewares, client, buf);
-		write(client, "HTTP/2 404 Not Found\ncontent-length: 4\ncontent-type: text/html; charset=UTF-8\n\n404 ", 84);
 
 		// Cleanup
 		close(client);
