@@ -4,14 +4,16 @@
 CC		:= gcc
 CFLAG	:= -g -Wall
 SPORT	:= 32322
+SOURCE	:= $(wildcard *.c)
+OBJECT	:= $(SOURCE:.c=.o)
 
 .PHONY:	all clean
 
 all: server.out
 	./server.out $(SPORT)
 
-server.out: bin.o middleware.o
-	$(CC) $(CFLAG) -o $@ bin.o middleware.o
+server.out: $(OBJECT)
+	$(CC) $(CFLAG) -o $@ $(OBJECT)
 
 clean:
 	$(RM) *.out *.o

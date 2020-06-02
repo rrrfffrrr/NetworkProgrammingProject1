@@ -13,19 +13,12 @@
 #include "errmsg.h"
 #include "packet.h"
 #include "middleware.h"
+#include "debug.h"
 
 const int MAX_PORT = 65535;
 int port = 80;
 
 int backlog = 5;
-
-// Debug middleware
-// print full data to console
-enum EMiddlewareReturn PrintAndClose(int client, char* data) {
-	printf("\e[93m###DATA###\e[0m\n%s\n\e[93m##########\e[0m\n", data);
-	write(client, "HTTP/2 404 Not Found\ncontent-length: 4\ncontent-type: text/html; charset=UTF-8\n\n404 ", 84);
-	return MDRET_Handled;
-}
 
 int main(int argc, char *argv[]) {
 	// Parse argument and get port
@@ -41,7 +34,7 @@ int main(int argc, char *argv[]) {
 
 	// Initialize middlewares
 	MIDDLEWARE(middlewares);
-	AddMiddleware(middlewares, PrintAndClose);
+	AddMiddleware(middlewares, PrintToConsole);
 
 	// Make a tcp socket
 	// Socket created with TCP/IPv4.
@@ -92,6 +85,7 @@ int main(int argc, char *argv[]) {
 		// Run middleware to process data
 		RunMiddleware(&middlewares, client, buf);
 
+		write(client, "HTTP/2 404 Not Found\ncontent-length: 4\ncontent-type: text/html; charset=UTF-8\n\n404 ", 84);
 		// Cleanup
 		close(client);
 	}
