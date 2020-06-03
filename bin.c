@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
 	// Initialize middlewares
 	MIDDLEWARE(middlewares);
 	AddMiddleware(middlewares, PrintToConsole);
+	AddMiddleware(middlewares, LogLawData);
+
 	AddMiddleware(middlewares, Response404);
 
 	// Make a tcp socket
