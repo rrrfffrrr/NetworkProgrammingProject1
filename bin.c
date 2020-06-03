@@ -14,6 +14,7 @@
 #include "packet.h"
 #include "middleware.h"
 #include "defmid.h"
+#include "fileprovider.h"
 
 const int MAX_PORT = 65535;
 int port = 80;
@@ -34,9 +35,15 @@ int main(int argc, char *argv[]) {
 
 	// Initialize middlewares
 	MIDDLEWARE(middlewares);
+	// Add logger
 	AddMiddleware(middlewares, PrintToConsole);
 	AddMiddleware(middlewares, LogLawData);
 
+	// Add static file provider
+		/* Init file provider here */
+	AddMiddleware(middlewares, StaticFileProvider);
+
+	// Last middleware must be 404 response
 	AddMiddleware(middlewares, Response404);
 
 	// Make a tcp socket
