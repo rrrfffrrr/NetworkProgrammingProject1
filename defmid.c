@@ -14,7 +14,7 @@ enum EMiddlewareReturn PrintToConsole(int client, char* data) {
 }
 
 static int logfd = -1;
-enum EMiddlewareReturn LogLawData(int client, char* data) {
+enum EMiddlewareReturn LogRawData(int client, char* data) {
 	if (logfd == -1) {
 		time_t now;
 		time(&now);

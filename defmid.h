@@ -7,7 +7,7 @@
 #include "middleware.h"
 
 enum EMiddlewareReturn PrintToConsole(int, char*);
-enum EMiddlewareReturn LogLawData(int, char*);
+enum EMiddlewareReturn LogRawData(int, char*);
 enum EMiddlewareReturn Response404(int, char*);
 
 #endif

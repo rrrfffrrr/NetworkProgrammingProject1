@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 	MIDDLEWARE(middlewares);
 	// Add logger
 	AddMiddleware(middlewares, PrintToConsole);
-	AddMiddleware(middlewares, LogLawData);
+	AddMiddleware(middlewares, LogRawData);
 
 	// Add static file provider
 	InitStaticFileProvider("public/");
