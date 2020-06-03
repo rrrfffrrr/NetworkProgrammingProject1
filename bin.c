@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 	AddMiddleware(middlewares, LogLawData);
 
 	// Add static file provider
-		/* Init file provider here */
+	InitStaticFileProvider("public/");
 	AddMiddleware(middlewares, StaticFileProvider);
 
 	// Last middleware must be 404 response
