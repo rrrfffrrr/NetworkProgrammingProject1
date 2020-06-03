@@ -7,7 +7,7 @@ SPORT	:= 32322
 SOURCE	:= $(wildcard *.c)
 OBJECT	:= $(SOURCE:.c=.o)
 
-.PHONY:	all clean
+.PHONY:	all clean clog c
 
 all: server.out
 	./server.out $(SPORT)
@@ -15,8 +15,13 @@ all: server.out
 server.out: $(OBJECT)
 	$(CC) $(CFLAG) -o $@ $(OBJECT)
 
+c: clean clog
+
 clean:
 	$(RM) *.out *.o
+
+clog:
+	$(RM) *.log
 
 %.o: %.c
 	$(CC) $(CFLAG) -c -o $@ $^

@@ -1,5 +1,6 @@
 /*
 * KANG CHAN YEONG(rrrfffrrr@naver.com)
+* Todo: static file provider
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,7 +64,7 @@ int main(int argc, char *argv[]) {
 
 	// Bind address to socket
 	if (bind(server, (struct sockaddr*)&socketAddr, sizeof(socketAddr)) < 0) {
-		ErrorMessage(EMSGCRT_SOCKET_CANNOTBIND);
+		ErrorMessage1(EMSGCRT_SOCKET_CANNOTBIND, port);
 		exit(EMSGRET_SOCKET);
 	}
 
