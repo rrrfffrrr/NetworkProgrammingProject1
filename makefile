@@ -3,14 +3,16 @@
 # @Last_update 06/02/2020
 CC		:= gcc
 CFLAG	:= -g -Wall
-SPORT	:= 8080
+PORT	:= 8080
 SOURCE	:= $(wildcard *.c)
 OBJECT	:= $(SOURCE:.c=.o)
 
-.PHONY:	all clean clog c
+.PHONY:	all run clean clog c
 
 all: server.out
-	./server.out $(SPORT)
+
+run: server.out
+	./server.out $(PORT)
 
 server.out: $(OBJECT)
 	$(CC) $(CFLAG) -o $@ $(OBJECT)
