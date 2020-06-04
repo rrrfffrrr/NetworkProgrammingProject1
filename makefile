@@ -3,7 +3,7 @@
 # @Last_update 06/02/2020
 CC		:= gcc
 CFLAG	:= -g -Wall
-SPORT	:= 32322
+SPORT	:= 8080
 SOURCE	:= $(wildcard *.c)
 OBJECT	:= $(SOURCE:.c=.o)
 
