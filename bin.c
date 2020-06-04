@@ -95,12 +95,14 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 
-		struct PacketHeader* header = ParsePacketHeader(buf);
+		// parsing header
+		// Deprecated for now
+		struct PacketHeader* header = NULL;// = ParsePacketHeader(buf);
 
 		// Run middleware to process data
 		RunMiddleware(&middlewares, client, buf, header);
 
-		RemovePacketHeader(header);
+		//RemovePacketHeader(header);
 
 		// Cleanup
 		close(client);
