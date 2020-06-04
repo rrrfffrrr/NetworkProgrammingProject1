@@ -131,19 +131,24 @@ enum EMiddlewareReturn StaticFileProvider(int client, char* data, struct PacketH
 			char contentType[32];
 			SelectContentType(path, contentType);
 
-			// Read file and save to body buffer
+
+			// Fill header packet
+			int writen = sprintf(packet, "HTTP/2 200 OK\ncontent-length: %ld\ncontent-type: %s\nserver: NPP/1.0\n\n", pstat.st_size, contentType);
+
+			// Send header packet
+			write(client, packet, writen);
+
+			// Read file and send it
 			int fd = open(path, O_RDONLY);
 			if (fd < 0)
 				return MDRET_Continue;
-			size_t bSize = read(fd, body, PACKET_SIZE);
+			size_t bSize;
+			while((bSize = read(fd, body, PACKET_SIZE)) > 0) {
+				write(client, body, bSize);
+			}
 			close(fd);
 
-			// Fill packet
-			int writen = sprintf(packet, "HTTP/2 200 OK\ncontent-length: %ld\ncontent-type: %s\nserver: NPP/1.0\n\n", bSize, contentType);
-			memcpy(packet + writen, body, bSize);
-
-			// Send packet and stop middlewares
-			write(client, packet, writen + bSize);
+			// Stop middlewares
 			return MDRET_Handled;
 		}
 	}
