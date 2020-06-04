@@ -6,8 +6,8 @@
 
 #include "middleware.h"
 
-enum EMiddlewareReturn PrintToConsole(int, char*);
-enum EMiddlewareReturn LogRawData(int, char*);
-enum EMiddlewareReturn Response404(int, char*);
+enum EMiddlewareReturn PrintToConsole(int, char*, struct PacketHeader*);
+enum EMiddlewareReturn LogRawData(int, char*, struct PacketHeader*);
+enum EMiddlewareReturn Response404(int, char*, struct PacketHeader*);
 
 #endif

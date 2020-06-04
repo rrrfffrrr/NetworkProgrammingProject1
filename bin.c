@@ -12,10 +12,12 @@
 #include <string.h>
 
 #include "errmsg.h"
-#include "packet.h"
+#include "header.h"
 #include "middleware.h"
 #include "defmid.h"
 #include "fileprovider.h"
+
+#define PACKET_SIZE 131072
 
 const int MAX_PORT = 65535;
 int port = 80;
@@ -93,8 +95,12 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 
+		struct PacketHeader* header = ParsePacketHeader(buf);
+
 		// Run middleware to process data
-		RunMiddleware(&middlewares, client, buf);
+		RunMiddleware(&middlewares, client, buf, header);
+
+		RemovePacketHeader(header);
 
 		// Cleanup
 		close(client);

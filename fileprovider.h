@@ -8,6 +8,6 @@
 #include <stdbool.h>
 
 bool InitStaticFileProvider(char*);
-enum EMiddlewareReturn StaticFileProvider(int, char*);
+enum EMiddlewareReturn StaticFileProvider(int, char*, struct PacketHeader*);
 
 #endif
