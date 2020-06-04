@@ -51,7 +51,13 @@ void SelectContentType(char* path, char* dest) {
 	// jpg
 	if (strcmp(buf, "jpg") == 0 || strcmp(buf, "jpeg") == 0)
 		sprintf(dest, "image/jpeg");
-	else if (strcmp(buf, "html") == 0)
+	else if (strcmp(buf, "gif") == 0)
+		sprintf(dest, "image/gif");
+	else if (strcmp(buf, "mp3") == 0)
+		sprintf(dest, "audio/mpeg");
+	else if (strcmp(buf, "pdf") == 0)
+		sprintf(dest, "application/pdf");
+	else if (strcmp(buf, "html") == 0) // html
 		sprintf(dest, "text/html; charset=UTF-8");
 	else
 		sprintf(dest, "text/plain; charset=UTF-8");

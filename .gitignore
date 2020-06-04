@@ -1,6 +1,9 @@
 # Log files
 *.log
 
+# Static files
+public/*
+
 # Prerequisites
 *.d
 
